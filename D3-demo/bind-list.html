@@ -1,0 +1,42 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D3.js</title>
+</head>
+
+<body>
+  <div></div>
+  <ul></ul>
+  <svg></svg>
+</body>
+<script src="http://d3js.org/d3.v5.min.js"></script>
+<script src="app.js" defer></script>
+<script>
+  heros = ["A", "B", "C", "D"];
+
+  // generate li
+  d3.select("ul")
+    .selectAll("li")
+    .data(heros)
+    .enter()
+    .append("li")
+    .text((hero) => hero);
+
+  const numbers = [20, 30, 40, 49];
+  let height = 40;
+  // generate bar in svg
+  d3.select("svg")
+    .selectAll("rect")
+    .data(numbers)
+    .enter() // iterate missed rect
+    .append("rect")
+    .attr("width", (n) => n)
+    .attr("height", height - 1)
+    .attr("transform", (n, i) => "translate(100," + i * height + ")");
+
+</script>
+
+</html>

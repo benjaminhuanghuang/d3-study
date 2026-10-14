@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>React 19 + D3.js v7 Demo</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 24px;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .bar {
+        fill: steelblue;
+        transition: fill 0.2s;
+      }
+      .bar:hover {
+        fill: orange;
+      }
+      .axis text {
+        font-size: 12px;
+      }
+      .axis path,
+      .axis line {
+        stroke: #ccc;
+      }
+    </style>
+
+    <!--
+      React 19 no longer ships UMD bundles (no global React/ReactDOM),
+      so it must be loaded as an ES module. esm.sh re-packages the npm
+      packages (including their dependencies) into browser-ready ESM.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@19",
+          "react-dom/client": "https://esm.sh/react-dom@19/client",
+          "d3": "https://esm.sh/d3@7"
+        }
+      }
+    </script>
+    <!-- Babel standalone, so JSX works directly in the browser without a build step -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <h1>React 19 + D3 v7</h1>
+    <div id="root"></div>
+
+    <!-- data-type="module" tells Babel to keep import/export and run the
+         transformed code as a real ES module (so the importmap above applies) -->
+    <script type="text/babel" data-type="module" data-presets="react">
+      import React, { useState, useMemo } from "react";
+      import { createRoot } from "react-dom/client";
+      import * as d3 from "d3";
+
+      const width = 480;
+      const height = 300;
+      const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+
+      function randomData(n = 8) {
+        return d3.range(n).map((i) => ({
+          label: `Item ${i + 1}`,
+          value: Math.round(10 + Math.random() * 90),
+        }));
+      }
+
+      function BarChart({ data }) {
+        // D3 only computes scales (math); React renders the SVG elements.
+        const x = useMemo(
+          () =>
+            d3
+              .scaleBand()
+              .domain(data.map((d) => d.label))
+              .range([margin.left, width - margin.right])
+              .padding(0.2),
+          [data]
+        );
+
+        const y = useMemo(
+          () =>
+            d3
+              .scaleLinear()
+              .domain([0, d3.max(data, (d) => d.value)])
+              .nice()
+              .range([height - margin.bottom, margin.top]),
+          [data]
+        );
+
+        const yTicks = y.ticks(5);
+
+        return (
+          <svg width={width} height={height}>
+            {/* y axis */}
+            <g className="axis" transform={`translate(${margin.left},0)`}>
+              <line x1={0} x2={0} y1={margin.top} y2={height - margin.bottom} />
+              {yTicks.map((t) => (
+                <g key={t} transform={`translate(0,${y(t)})`}>
+                  <line x1={-4} x2={0} />
+                  <text x={-8} dy="0.32em" textAnchor="end">
+                    {t}
+                  </text>
+                </g>
+              ))}
+            </g>
+
+            {/* x axis */}
+            <g className="axis">
+              {data.map((d) => (
+                <text
+                  key={d.label}
+                  x={x(d.label) + x.bandwidth() / 2}
+                  y={height - margin.bottom + 16}
+                  textAnchor="middle"
+                >
+                  {d.label}
+                </text>
+              ))}
+            </g>
+
+            {/* bars */}
+            {data.map((d) => (
+              <rect
+                key={d.label}
+                className="bar"
+                x={x(d.label)}
+                y={y(d.value)}
+                width={x.bandwidth()}
+                height={y(0) - y(d.value)}
+              >
+                <title>{`${d.label}: ${d.value}`}</title>
+              </rect>
+            ))}
+          </svg>
+        );
+      }
+
+      function App() {
+        const [data, setData] = useState(() => randomData());
+
+        return (
+          <>
+            <BarChart data={data} />
+            <button onClick={() => setData(randomData())}>
+              Randomize data
+            </button>
+          </>
+        );
+      }
+
+      const root = createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,5 +1,5 @@
-import { range } from 'd3';
-import { Face } from './Face';
+import { range } from "d3";
+import { Face } from "./Face";
 
 const width = 160;
 const height = 160;
@@ -7,8 +7,9 @@ const height = 160;
 const array = range(6 * 3);
 
 const App = () =>
-  array.map(() => (
+  array.map((_, i) => (
     <Face
+      key={i}
       width={width}
       height={height}
       centerX={width / 2}
@@ -21,3 +22,5 @@ const App = () =>
       mouthRadius={30 + Math.random() * 10}
     />
   ));
+
+export default App;

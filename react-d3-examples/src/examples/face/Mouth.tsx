@@ -1,12 +1,28 @@
-import { arc } from 'd3';
+import { arc } from "d3";
 
-export const Mouth = ({mouthRadius, mouthWidth}: { mouthRadius: number; mouthWidth: number }) => {
-  
+export const Mouth = ({
+  mouthRadius,
+  mouthWidth,
+}: {
+  mouthRadius: number;
+  mouthWidth: number;
+}) => {
   const mouthArc = arc()
     .innerRadius(mouthRadius)
     .outerRadius(mouthRadius + mouthWidth)
     .startAngle(Math.PI / 2)
-    .endAngle(Math.PI * 3 / 2);
-  
-  return <path d={mouthArc()}/>;
+    .endAngle((Math.PI * 3) / 2);
+
+  return (
+    <path
+      d={
+        mouthArc({
+          innerRadius: mouthRadius,
+          outerRadius: mouthRadius + mouthWidth,
+          startAngle: Math.PI / 2,
+          endAngle: (Math.PI * 3) / 2,
+        }) ?? undefined
+      }
+    />
+  );
 };

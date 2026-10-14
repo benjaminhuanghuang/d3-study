@@ -1,3 +1,11 @@
-export const BackgroundCircle = ({ "radius html model", strokeWidth }) => (
-  <circle r={radius} fill="yellow" stroke="black" stroke-width={strokeWidth} />
+type BackgroundCircleProps = {
+  radius: number;
+  strokeWidth: number;
+};
+
+export const BackgroundCircle = ({
+  radius,
+  strokeWidth,
+}: BackgroundCircleProps) => (
+  <circle r={radius} fill="yellow" stroke="black" strokeWidth={strokeWidth} />
 );

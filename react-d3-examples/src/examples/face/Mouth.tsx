@@ -1,6 +1,7 @@
 import { arc } from 'd3';
 
 export const Mouth = ({mouthRadius, mouthWidth}: { mouthRadius: number; mouthWidth: number }) => {
+  
   const mouthArc = arc()
     .innerRadius(mouthRadius)
     .outerRadius(mouthRadius + mouthWidth)

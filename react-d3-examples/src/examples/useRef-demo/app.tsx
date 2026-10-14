@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { select } from "d3";
 
 const data = [15, 4, 39, 111];
 
 export default function HookDemo() {
-  const svgRef = useRef();
+  const svgRef = useRef<SVGSVGElement>(null);
+
   useEffect(() => {
     const svg = select(svgRef.current);
     svg

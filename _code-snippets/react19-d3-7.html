@@ -33,20 +33,8 @@
       }
     </style>
 
-    <!--
-      React 19 no longer ships UMD bundles (no global React/ReactDOM),
-      so it must be loaded as an ES module. esm.sh re-packages the npm
-      packages (including their dependencies) into browser-ready ESM.
-    -->
-    <script type="importmap">
-      {
-        "imports": {
-          "react": "https://esm.sh/react@19",
-          "react-dom/client": "https://esm.sh/react-dom@19/client",
-          "d3": "https://esm.sh/d3@7"
-        }
-      }
-    </script>
+    <!-- D3 v7 -->
+    <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
     <!-- Babel standalone, so JSX works directly in the browser without a build step -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
@@ -54,12 +42,11 @@
     <h1>React 19 + D3 v7</h1>
     <div id="root"></div>
 
-    <!-- data-type="module" tells Babel to keep import/export and run the
-         transformed code as a real ES module (so the importmap above applies) -->
-    <script type="text/babel" data-type="module" data-presets="react">
-      import React, { useState, useMemo } from "react";
-      import { createRoot } from "react-dom/client";
-      import * as d3 from "d3";
+    <script type="text/babel" data-type="module">
+      import React from "https://esm.sh/react@19";
+      import ReactDOM from "https://esm.sh/react-dom@19/client";
+
+      const { useState, useMemo } = React;
 
       const width = 480;
       const height = 300;
@@ -155,7 +142,7 @@
         );
       }
 
-      const root = createRoot(document.getElementById("root"));
+      const root = ReactDOM.createRoot(document.getElementById("root"));
       root.render(<App />);
     </script>
   </body>
